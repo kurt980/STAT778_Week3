@@ -11,4 +11,4 @@
 module load gnu12 r/4.4.0-od
 
 # run the script
-Rscript sim_df_array.R --repl 1000 --n 100 ${SLURM_ARRAY_TASK_ID}
+Rscript Activity6.R --repl 1000 --n 100 ${SLURM_ARRAY_TASK_ID}
