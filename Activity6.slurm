@@ -7,6 +7,8 @@
 #SBATCH --output=rscript_%a.out
 #SBATCH --error=rscript_%a.err
 
+module load gnu10
+module load gsl
 module load gnu12 r/4.4.0-od
 
 Rscript Activity6.R --repl 1000 --n 100 ${SLURM_ARRAY_TASK_ID}
