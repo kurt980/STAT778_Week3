@@ -1,0 +1,501 @@
+---
+title: "In_class_activity_Week3"
+output: html_document
+---
+
+## In class activitity
+
+```{r}
+
+```
+
+### Activity 2
+
+- Scenario 1: theoretical properties hold empirically (e.g., in finite samples)
+
+DeepKriging by Chen et al. (2024) proposed a novel method that uses deep neural networks to construct a Kriging-like framework that is much faster and outperforms current spatial prediction methods. The simulation study in the paper generated data from 1-D Gaussian Process to validate the hypothesis "basic Kriging with true covariance should perform the best" and apply multiple existing methods including their own to that data. The simulation study validated the belief that a traditional kriding method with true covariance is the best performer under a stationary Gaussian process. However this doesn't effect the fact that their novel method outperforms traditional ones in more rough settings.
+
+- Scenario 2: the proposed methods are superior to competing methods
+
+Zhan et al. (2025) proposed Neural networks for geospatial data where they have a novel method "NN-GLS" that utilzes deep neural networks and maintains the fundamental assumptions of spatial statistics. The simulation study was used to demonstrate its superiority in terms of accuracy and efficiency compared with concurrent methods in various settings. For example, data generated from Gaussian Process was tuned to provide alterations in the settings and create challenges for modeling. The data was used by the proposed method along with other methods like basic NN, spline and nonlinear methods like random forest. The final conclusion is that the proposed model outperforms the aforementioned methods in modeling spatial covariance.  
+
+- Scenario 3: the proposed/used methods have certain properties in non-standard settings
+
+Zhan et al. (2025)'s Neural networks for geospatial data also did simulations to check the robustness of their model under model misspecification, including misspecification of the Gaussian Process covariance, when their working covariance doesn’t match the true covariance, and complete misspecification of the spatial dependence, both of which are common pitfalls in realistic settings. The property maintained in extreme settings is the robustness: the model still outperforms and maintains a relative ideal level of accuracy under these settings.
+
+- Scenario 4: the proposed sample size for a study delivers enough power to detect an effect (empirical sample-size calculation)
+
+As seen in the title of Su et al.'s Simulation, power evaluation and sample size recommendation for single-cell RNA-seq. Bioinformatics, they use simulation study to aid their goal of providing a sample size recommendation framework for single-cell RNA sequence. The framework they proposed is called POWSC, and it performs simulation-based power analysis for scRNA-seq differential expression. It generates realistic synthetic datasets and estimates power as the proportion of true DE genes detected, which is repeated over many Monte Carlo replicates. The smallest cell number achieving a target power is selected. So this method naturally relies on MC simulation for its operations.
+
+- Scenario 5: other than the 4 above
+
+Gonzalez-Dueñas et al. (2021)'s Performance-based coastal engineering framework uses MCMC to draw samples from a target stationary distribution and uses Gelman–Rubin convergence diagnostics to justify that the samples can be used for inference. They used it to approximate quantities of interest via the empirical distribution of the MCMC draws, rather than using baseline methods in a simulation study.
+
+
+#### References
+
+- Chen, W., Li, Y., Reich, B., & Sun, Y. (2024). DEEPKRIGING. Statistica Sinica, 34(1), 291–311.
+- Zhan, W., & Datta, A. (2025). Neural networks for geospatial data. Journal of the American Statistical Association, 120(549), 535–547.
+- Gonzalez-Dueñas, C., & Padgett, J. (2021). Performance-based coastal engineering framework. Frontiers in Built Environment, 7, 690715.
+- Su, K., Wu, Z., & Wu, H. (2020). Simulation, power evaluation and sample size recommendation for single-cell RNA-seq. Bioinformatics, 36(19), 4860–4868.
+
+
+### Activity 3
+
+Find the cutoff point $\eta$ as a function of the level $\alpha$
+
+#### Log-likelihood ratio for equal covariance Gaussians
+
+Given
+
+$$
+X \mid Y=1 \sim \mathcal{N}(\mu_1,\Sigma),\qquad
+X \mid Y=0 \sim \mathcal{N}(\mu_0,\Sigma),
+$$
+, we know that for a multivariate normal,
+$$
+f_i(x)=\frac{1}{(2\pi)^{p/2}|\Sigma|^{1/2}}
+\exp\!\left(-\frac12(x-\mu_i)^\top\Sigma^{-1}(x-\mu_i)\right),\quad i\in\{0,1\}.
+$$
+
+Then the log density ratio is
+
+$$
+\begin{align*}
+\log\frac{f_1(x)}{f_0(x)}
+&=\log\frac{
+\frac{1}{(2\pi)^{p/2}|\Sigma|^{1/2}}
+\exp\!\left(-\frac12(x-\mu_1)^\top\Sigma^{-1}(x-\mu_1)\right)
+}{
+\frac{1}{(2\pi)^{p/2}|\Sigma|^{1/2}}
+\exp\!\left(-\frac12(x-\mu_0)^\top\Sigma^{-1}(x-\mu_0)\right)
+}\\
+&=\log\left[
+\exp\!\left(
+-\frac12(x-\mu_1)^\top\Sigma^{-1}(x-\mu_1)
++\frac12(x-\mu_0)^\top\Sigma^{-1}(x-\mu_0)
+\right)\right]\\
+&=\frac12\Big(
+(x-\mu_0)^\top\Sigma^{-1}(x-\mu_0)
+-(x-\mu_1)^\top\Sigma^{-1}(x-\mu_1)
+\Big).
+\end{align*}
+$$
+
+For the quadratic term, we can simplify:
+$$
+\begin{align*}
+(x-\mu)^\top\Sigma^{-1}(x-\mu)
+&=(x^\top-\mu^\top)\Sigma^{-1}(x-\mu)\\
+&=x^\top\Sigma^{-1}x-\mu^\top\Sigma^{-1}x-x^\top\Sigma^{-1}\mu+\mu^\top\Sigma^{-1}\mu.
+\end{align*}
+$$
+
+; since $\mu^\top\Sigma^{-1}x$ is 1 by 1, we can get
+$$
+\mu^\top\Sigma^{-1}x=\big(\mu^\top\Sigma^{-1}x\big)^\top
+=x^\top(\Sigma^{-1})^\top\mu
+=x^\top\Sigma^{-1}\mu,
+$$
+using the symmetry of $\Sigma$,
+
+Now
+$$
+(x-\mu)^\top\Sigma^{-1}(x-\mu)=x^\top\Sigma^{-1}x-2\mu^\top\Sigma^{-1}x+\mu^\top\Sigma^{-1}\mu.
+$$
+
+Plug back in and get:
+
+$$
+\begin{align*}
+\log\frac{f_1(x)}{f_0(x)}
+&=\frac12\Big[
+\big(x^\top\Sigma^{-1}x-2\mu_0^\top\Sigma^{-1}x+\mu_0^\top\Sigma^{-1}\mu_0\big)
+-\big(x^\top\Sigma^{-1}x-2\mu_1^\top\Sigma^{-1}x+\mu_1^\top\Sigma^{-1}\mu_1\big)
+\Big]\\
+&=(\mu_1-\mu_0)^\top\Sigma^{-1}x
++\frac12\big(\mu_0^\top\Sigma^{-1}\mu_0-\mu_1^\top\Sigma^{-1}\mu_1\big).
+\end{align*}
+$$
+
+Hence we can find the decision rule:
+
+$$
+\phi_\alpha(x)=
+\begin{cases}
+1, & (\mu_1-\mu_0)^\top\Sigma^{-1}x >
+\frac12\big(\mu_1^\top\Sigma^{-1}\mu_1-\mu_0^\top\Sigma^{-1}\mu_0\big)+\log\eta,
+\\0, & \text{otherwise}.
+\end{cases}
+$$
+
+#### Write it as a function of the significance level
+
+We know that $X\sim\mathcal{N}(\mu_0,\Sigma)$ under $Y=0$. 
+
+Now we can let
+
+$$
+\beta^\top=(\mu_1-\mu_0)^\top\Sigma^{-1},
+\quad\text{namely}\quad
+\beta=\Sigma^{-1}(\mu_1-\mu_0).
+$$
+Then
+
+$$
+\beta^\top X \sim \mathcal{N}\big(\beta^\top\mu_0,\;\beta^\top\Sigma\beta\big),
+\qquad
+\beta^\top\Sigma\beta=(\mu_1-\mu_0)^\top\Sigma^{-1}(\mu_1-\mu_0).
+$$
+Therefore we can get the Z score by transforming it into a standard normal:
+
+$$
+Z=\frac{\beta^\top X-\beta^\top\mu_0}{\sqrt{\beta^\top\Sigma\beta}}
+\sim\mathcal{N}(0,1).
+$$
+Now we re-write the expression of $\alpha$:
+
+$$
+\begin{align*}
+\alpha
+&=P(\phi(X)=1\mid Y=0)\\
+&=P\!\left(
+\beta^\top X >
+\frac12(\mu_1^\top\Sigma^{-1}\mu_1-\mu_0^\top\Sigma^{-1}\mu_0)+\log\eta
+\;\middle|\;Y=0\right)\\
+&=P\!\left(
+Z>
+\frac{
+\frac12(\mu_1^\top\Sigma^{-1}\mu_1-\mu_0^\top\Sigma^{-1}\mu_0)+\log\eta-\beta^\top\mu_0
+}{
+\sqrt{(\mu_1-\mu_0)^\top\Sigma^{-1}(\mu_1-\mu_0)}
+}
+\right).
+\end{align*}
+$$
+
+We know derive a useful equality:
+
+Since $P(Z>m)=1-\Phi(m)$, let $1-\Phi(m)=\alpha$, then
+$$
+m=\Phi^{-1}(1-\alpha).
+$$
+
+Plug this equality back in:
+$$
+\log\eta
+=\Phi^{-1}(1-\alpha)\sqrt{(\mu_1-\mu_0)^\top\Sigma^{-1}(\mu_1-\mu_0)}
++\beta^\top\mu_0
+-\frac12(\mu_1^\top\Sigma^{-1}\mu_1-\mu_0^\top\Sigma^{-1}\mu_0),
+$$
+
+Finally,
+$$
+\eta=\exp\!\left(
+\Phi^{-1}(1-\alpha)\sqrt{(\mu_1-\mu_0)^\top\Sigma^{-1}(\mu_1-\mu_0)}
++\beta^\top\mu_0
+-\frac12(\mu_1^\top\Sigma^{-1}\mu_1-\mu_0^\top\Sigma^{-1}\mu_0)
+\right), \text{ where } \beta=\Sigma^{-1}(\mu_1-\mu_0).
+$$
+
+The expression is concluded.
+
+
+### Activity 4
+
+Using above, design and implement an MC simulation to verify that my estimator achieves the desired Type I error rate ($\alpha$)
+
+For simplicity in computation, we can also re-write the condition in 3 as:
+
+$$
+\log\frac{f_1(x)}{f_0(x)} > \log(\eta)
+
+\\\Leftrightarrow
+
+\\(\mu_1-\mu_0)^\top\Sigma^{-1}x
++\frac12\big(\mu_0^\top\Sigma^{-1}\mu_0-\mu_1^\top\Sigma^{-1}\mu_1\big) > \log(\eta)
+
+\\\Leftrightarrow
+
+\\ \beta^Tx > \log(\eta) + \frac12(\mu_1^\top\Sigma^{-1}\mu_1-\mu_0^\top\Sigma^{-1}\mu_0)
+
+\\\Leftrightarrow
+
+\\\beta^Tx > \Phi^{-1}(1-\alpha)\sqrt{(\mu_1-\mu_0)^\top\Sigma^{-1}(\mu_1-\mu_0)}
++\beta^\top\mu_0
+-\frac12(\mu_1^\top\Sigma^{-1}\mu_1-\mu_0^\top\Sigma^{-1}\mu_0) + \frac12(\mu_1^\top\Sigma^{-1}\mu_1-\mu_0^\top\Sigma^{-1}\mu_0)
+
+\\\Leftrightarrow
+
+\\\beta^Tx > \Phi^{-1}(1-\alpha)\sqrt{(\mu_1-\mu_0)^\top\Sigma^{-1}(\mu_1-\mu_0)}
++\beta^\top\mu_0
+$$
+
+```{r}
+# Set parameter
+p = 3
+mu0 <- c(-0.7,0,0.7)
+mu1 <- -mu0
+Sigma <- diag(p)
+
+# Set alpha level
+alpha <- 0.05
+
+# Simulation parameters
+R = 1000
+n = 100
+
+# Generate test set
+set.seed(4)
+X0_test <- matrix(rnorm(10000 * p), ncol = p) + rep(mu0, each = 10000)
+X1_test <- matrix(rnorm(10000 * p), ncol = p) + rep(mu1, each = 10000)
+
+# Create lists to save results
+typeIerrors <- numeric(R)
+typeIIerrors <- numeric(R)
+
+for (r in (1:R)) {
+  set.seed(r)
+  
+  # Generate train set
+  X0_train <- matrix(rnorm(n * p), ncol = p) + rep(mu0, each = n)
+  X1_train <- matrix(rnorm(n * p), ncol = p) + rep(mu1, each = n)
+  
+  # Estimate parameters from generated data
+  mu0_hat <- colMeans(X0_train)
+  mu1_hat <- colMeans(X1_train)
+  Sigma0_hat <- stats::cov(X0_train)
+  Sigma1_hat <- stats::cov(X1_train)
+  
+  ### Pool the estimated covariances because we assumed equal covariance
+  Sigma_hat <- ((n - 1) * Sigma0_hat + (n - 1) * Sigma1_hat) / (2 * n - 2)
+  
+  # Use the formula in 3 to compute the simple version of decision boundary
+  ## Group some terms
+  phi <- qnorm(1-alpha)
+  delta_hat <- mu1_hat - mu0_hat
+
+  beta_hat <- solve(Sigma_hat, delta_hat)
+  quad_term <- drop(t(delta_hat) %*% beta_hat) # term under sqrt
+  
+  ## Put together the boundary in simple version
+  simple_bound <- phi * sqrt(quad_term) + drop(t(beta_hat) %*% mu0_hat)
+  
+  ## Compute test error
+  typeIerrors[r] <- mean(drop(X0_test %*% beta_hat) > simple_bound)
+  typeIIerrors[r] <- mean(drop(X1_test %*% beta_hat) <= simple_bound)
+}
+
+print(paste("estimated Type I Error on Testing Set: ", mean(typeIerrors)))
+print(paste("estimated Type II Error on Testing Set: ", mean(typeIIerrors)))
+
+```
+The estimated Type I Error is 0.0492, very close to what we set it to be ($\alpha = 0.05$).
+
+
+### Activity 5
+
+Now repeat the previous simulation but vary $\alpha \in {0.01, 0.025, 0.05, 0.075, 0.1}$
+
+```{r}
+alphas <- c(0.01, 0.025, 0.05, 0.075, 0.1)
+
+# generate test set
+set.seed(5)
+X0_test <- matrix(rnorm(10000 * p), ncol = p) + rep(mu0, each = 10000)
+X1_test <- matrix(rnorm(10000 * p), ncol = p) + rep(mu1, each = 10000)
+
+# Now make simulation a function
+simulation_5 <- function(alphas) {
+  result <- data.frame(alpha = alphas, mean = NA_real_, sd = NA_real_)
+  
+  for (j in seq_along(alphas)) {
+    alpha <- alphas[j]
+    
+    typeIIerrors <- numeric(R)
+    
+    for (r in seq_len(R)) {
+      set.seed(r)
+      
+      # Generate training data
+      X0_train <- matrix(rnorm(n * p), ncol = p) + rep(mu0, each = n)
+      X1_train <- matrix(rnorm(n * p), ncol = p) + rep(mu1, each = n)
+      
+      # Estimate parameters
+      mu0_hat <- colMeans(X0_train)
+      mu1_hat <- colMeans(X1_train)
+      Sigma0_hat <- cov(X0_train)
+      Sigma1_hat <- cov(X1_train)
+      # Poole covariance because we assume equal covar
+      Sigma_hat <- ((n - 1) * Sigma0_hat + (n - 1) * Sigma1_hat) / (2 * n - 2)
+      
+      # Use the formula in 3 to compute the simple version of decision boundary
+      ## Group some terms
+      phi <- qnorm(1-alpha)
+      delta_hat <- mu1_hat - mu0_hat
+    
+      beta_hat <- solve(Sigma_hat, delta_hat)
+      quad_term <- drop(t(delta_hat) %*% beta_hat) # term under sqrt
+      
+      ## Put together the boundary in simple version
+      simple_bound <- phi * sqrt(quad_term) + drop(t(beta_hat) %*% mu0_hat)
+      
+      # evaluate type ii error
+      typeIIerrors[r] <- mean(drop(X1_test %*% beta_hat) <= simple_bound)
+    }
+    
+    result$mean[j] <- mean(typeIIerrors)
+    result$sd[j] <- sd(typeIIerrors)
+  }
+  return(result)
+}
+
+res <- simulation_5(alphas)
+print(res)
+```
+
+```{r}
+# plot
+plot(
+  res$alpha, res$mean,
+  xlab = expression(alpha),
+  ylab = "Mean type II error",
+  ylim = c(0.1,0.7),
+  pch = 16
+)
+arrows(
+  x0 = res$alpha,
+  y0 = res$mean - res$sd,
+  x1 = res$alpha,
+  y1 = res$mean + res$sd,
+  angle = 90, code = 3, length = 0.05
+)
+```
+We can see as the type I error ($\alpha$) rate increases, the average type II error rate decreases. This is because type I error is basically the rate at which we predict case to be positive when it is actually negative (positive as in rejecting the null). When this rate increases, it means we are predicting more positives. And type II error is basically we predict a negative case out of an actually positive case. As we predict more positives, we are able to actually capture more true positives, hence the type II error decreases.
+
+
+### Activity 6
+
+Replace the data generating distribution with a t-distribution (but the decision rule is still based on the Normality assumption). Consider several different degrees of freedom, $\text{df} \in {2,3,5,10,100,200}$, $\alpha$ here is selected to be 0.05
+
+```{r}
+# Parameters remain the same
+p = 3
+mu0 <- c(-0.7,0,0.7)
+mu1 <- -mu0
+Sigma <- diag(p)
+
+# Set alpha level
+alpha <- 0.05
+
+# Simulation parameters
+R = 1000
+n = 100
+
+# Set of dfs from small to large
+dfs <- c(2,3,4,5,10,100)
+
+# Store results in a dataframe
+result <- data.frame(df = dfs, mean_typeI = NA_real_, sd_typeI = NA_real_, mean_typeII = NA_real_, sd_typeII = NA_real_)
+# Run simulation for different df
+for (j in seq_along(dfs)) {
+  # Generate test set based on current df
+  df <- dfs[j]
+  set.seed(df)
+  X0_test <- matrix(rt(10000 * p, df = df), ncol = p) + rep(mu0, each = 10000)
+  X1_test <- matrix(rt(10000 * p, df = df), ncol = p) + rep(mu1, each = 10000)
+  
+  # Create lists to save results
+  typeIerrors <- numeric(R)
+  typeIIerrors <- numeric(R)
+  
+  for (r in (1:R)) {
+    set.seed(r)
+    
+    # Generate train set
+    X0_train <- matrix(rt(n * p, df = df), ncol = p) + rep(mu0, each = n)
+    X1_train <- matrix(rt(n * p, df = df), ncol = p) + rep(mu1, each = n)
+    
+    # Estimate parameters from generated data
+    mu0_hat <- colMeans(X0_train)
+    mu1_hat <- colMeans(X1_train)
+    Sigma0_hat <- stats::cov(X0_train)
+    Sigma1_hat <- stats::cov(X1_train)
+    
+    ### Pool the estimated covariances because we assumed equal covariance
+    Sigma_hat <- ((n - 1) * Sigma0_hat + (n - 1) * Sigma1_hat) / (2 * n - 2)
+    
+    # Use the formula in 3 to compute the simple version of decision boundary
+    ## Group some terms
+    phi <- qnorm(1-alpha)
+    delta_hat <- mu1_hat - mu0_hat
+  
+    beta_hat <- solve(Sigma_hat, delta_hat)
+    quad_term <- drop(t(delta_hat) %*% beta_hat) # term under sqrt
+    
+    ## Put together the boundary in simple version
+    simple_bound <- phi * sqrt(quad_term) + drop(t(beta_hat) %*% mu0_hat)
+    
+    ## Compute test error
+    typeIerrors[r] <- mean(drop(X0_test %*% beta_hat) > simple_bound)
+    typeIIerrors[r] <- mean(drop(X1_test %*% beta_hat) <= simple_bound)
+  }
+  result$mean_typeI[j] <- mean(typeIerrors)
+  result$sd_typeI[j] <- sd(typeIerrors)
+  result$mean_typeII[j] <- mean(typeIIerrors)
+  result$sd_typeII[j] <- sd(typeIIerrors)
+  # 
+  # print(paste("estimated Type I Error on Testing Set for df = ", df, ": ", mean(typeIerrors)))
+  # print(paste("estimated Type II Error on Testing Set for df = ", df, ": ", mean(typeIIerrors)))
+}
+
+print(result)
+```
+
+```{r}
+# plot
+plot(
+  result$df, result$mean_typeI,
+  xlab = "df",
+  ylab = "Mean type I error",
+  ylim = c(0, 0.1),
+  pch = 16
+)
+lines(result$df, result$mean_typeI)
+arrows(
+  x0 = result$df,
+  y0 = result$mean_typeI - result$sd_typeI,
+  x1 = result$df,
+  y1 = result$mean_typeI + result$sd_typeI,
+  angle = 90, code = 3, length = 0.05
+)
+
+################################################################################
+plot(
+  result$df, result$mean_typeII,
+  xlab = "df",
+  ylab = "Mean type II error",
+  ylim = c(0.1, 1),
+  pch = 16
+)
+lines(result$df, result$mean_typeII)
+arrows(
+  x0 = result$df,
+  y0 = result$mean_typeII - result$sd_typeII,
+  x1 = result$df,
+  y1 = result$mean_typeII + result$sd_typeII,
+  angle = 90, code = 3, length = 0.05
+)
+```
+We can see that the Type I error rate increases and the Type II error rate decreases as degrees of freedom increase. To be specific, when df is below 5, Type I error rate increases fast, while as df goes beyond 5, the upward trend begins to flatten. We can observe similar patterns for Type II error rate: the downward trend is sharp when df is below 10, but does not drop much when it reaches 100.
+
+This is because when the df for the t-distribution is small, the distribution has large tails compared with normal, which means more likely to see extremes from both classes, and there is more overlapping between the null and alternative distributions. Therefore, if we use the same decision rule as in the normal case, which is a threshold for the ratio between the densities $\frac{f_1}{f_0}$, this threshold would be further away from the center of the null distribution in the t-distribution case. This means the classifier would predict less positives (rejects null), and reducing the Type I error rate.
+
+Similarly for the type II error rate, when the classifier becomes more conservative, it predicts less positives and more negatives (do not reject null). So there tends to be more false negatives, and the type II error rates will be very high.
+
+In the end, when df goes up, the T distributions will approximate a normal distribution with same parameters, so the decision boundary will become closer to what it would have been in the normal case. We can see this in our simulations: type I error rates and type II error rates start to become close to the values in problem 4.
+
+
+### Activity 7
+
+Please see Activity6.R
