@@ -85,5 +85,4 @@ out <- data.frame(
 dir.create("sim_out", showWarnings = FALSE)
 saveRDS(out, file.path("sim_out", sprintf("result_df_%s_task_%02d.rds", df, task_id)))
 
-cat("saved:", outfile, "\n")
 print(out)
